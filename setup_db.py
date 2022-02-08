@@ -1,3 +1,8 @@
+"""Database Schema
+
+Database schema and connection functionality
+"""
+
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
@@ -20,7 +25,8 @@ class Offer(Base):
 
 
 def setup_connection():
-    # engine = create_engine('sqlite:///:memory:', echo=False)  # temporarily using inmemory db
+    """ Sets up connection to the database. Currently a simple sqlite3 file. """
+
     engine = create_engine('sqlite:///db/temp.db')
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
