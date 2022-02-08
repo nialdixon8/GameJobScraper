@@ -5,6 +5,8 @@ from urllib.parse import parse_qs
 import matplotlib.pyplot as plt
 import re
 
+from setup_db import setup_connection, Offer
+
 #We will be scraping gamesjobdirect.com
 
 
@@ -126,7 +128,8 @@ def job_desc():
     """
     data = []
 #    for page in range(1, int(final_page())+1):
-    
+
+    session = setup_connection()
     for page in range(1, 6):
         URL = f"https://www.gamesjobsdirect.com/results?page={page}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4"
         page = requests.get(URL)
@@ -171,11 +174,11 @@ def job_desc():
             if unwanted is not None:
                 unwanted.extract()
             data.append([job_title.text.strip(), company_name.text.strip(), experience.text.strip(), location.text.strip(), language])
-    return data
-
-print(job_desc())
-
-        
-
+            offer = Offer(title=job_title.text.strip(), employer=company_name.text.strip(),
+                          location=location.text.strip(), experience=experience.text.strip(),requirements=language)
+            session.add(offer)
+    session.commit()
 
 
+if __name__ == '__main__':
+    job_desc()

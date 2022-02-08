@@ -36,10 +36,9 @@ def setup_connection():
 
 if __name__ == '__main__':
     session = setup_connection()
-
-    offer1 = Offer(title='Software Engineer', employer='Google', location='Leicester', experience='None', requirements='Python')
-    offer2 = Offer(title='Database Engineer', employer='Microsoft', location='Leicester', experience='None', requirements='MySQL')
-    session.add_all((offer1, offer2))
-    session.commit()
-
-    print(session.query(Offer).all())
+    # offer1 = Offer(title='Software Engineer', employer='Google', location='Leicester', experience='None', requirements='Python')
+    # offer2 = Offer(title='Database Engineer', employer='Microsoft', location='Leicester', experience='None', requirements='MySQL')
+    # session.add_all((offer1, offer2))
+    # session.commit()
+    #
+    # print(session.query(Offer).all())
