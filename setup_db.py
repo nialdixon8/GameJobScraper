@@ -10,6 +10,8 @@ class Offer(Base):
     id = Column(Integer, primary_key=True)
     title = Column(String(50))
     employer = Column(String(50))
+    location = Column(String(50))
+    experience = Column(String(50))
     requirements = Column(String(50))
 
     def __repr__(self):
@@ -18,7 +20,8 @@ class Offer(Base):
 
 
 def setup_connection():
-    engine = create_engine('sqlite:///:memory:', echo=False)  # temporarily using inmemory db
+    # engine = create_engine('sqlite:///:memory:', echo=False)  # temporarily using inmemory db
+    engine = create_engine('sqlite:///db/temp.db')
     Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine)
     session = Session()
@@ -28,8 +31,8 @@ def setup_connection():
 if __name__ == '__main__':
     session = setup_connection()
 
-    offer1 = Offer(title='Software Engineer', employer='Google', requirements='Python')
-    offer2 = Offer(title='Database Engineer', employer='Microsoft', requirements='MySQL')
+    offer1 = Offer(title='Software Engineer', employer='Google', location='Leicester', experience='None', requirements='Python')
+    offer2 = Offer(title='Database Engineer', employer='Microsoft', location='Leicester', experience='None', requirements='MySQL')
     session.add_all((offer1, offer2))
     session.commit()
 
