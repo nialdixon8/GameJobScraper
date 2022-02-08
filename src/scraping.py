@@ -3,6 +3,7 @@ from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
 import matplotlib.pyplot as plt
+import re
 
 #We will be scraping gamesjobdirect.com
 
@@ -63,13 +64,16 @@ def job_types():
     print(ui_design)
 
 def programming_langs():
-    import re
+    """
+    Counts all programming languages in a specific job search
+    """
     python = 0
     csharp = 0
     cplus = 0
     java = 0
     sql = 0
     unity = 0
+    #loops through all the pages in a search
     for page in range(1, int(final_page())+1):
         URL = f"https://www.gamesjobsdirect.com/results?page={page}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4"
         page = requests.get(URL)
@@ -103,6 +107,9 @@ def programming_langs():
     return [python, csharp, cplus, java, sql, unity]
              
 def graph():
+    """
+    Creates a graph that represents most common programming languages
+    """
     labels = 'Python', 'C#', "C++", "Java", "SQL", "Unity"
     sizes = programming_langs()
 
@@ -114,7 +121,13 @@ def graph():
     plt.show()
             
 def job_desc():
-    for page in range(1, int(final_page())+1):
+    """
+    Scrapes all important info about the jobs and returns lists of all data
+    """
+    data = []
+#    for page in range(1, int(final_page())+1):
+    
+    for page in range(1, 6):
         URL = f"https://www.gamesjobsdirect.com/results?page={page}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4"
         page = requests.get(URL)
         soup = BeautifulSoup(page.content, "html.parser")
@@ -123,17 +136,46 @@ def job_desc():
             URL = "https://www.gamesjobsdirect.com" + x["href"]
             page = requests.get(URL)
             soup = BeautifulSoup(page.content, "html.parser")
-
+            # Finds programming Language
+            language = ""
+            job_description = soup.find("div", class_="post-description")
+            is_python = job_description.find(string=re.compile('.*{0}.*'.format("Python")))
+            is_csharp = job_description.find(string=re.compile('.*{0}.*'.format("C#")))
+            is_cplus = job_description.find(string=re.compile('.*{0}.*'.format("C\+\+")))
+            is_java = job_description.find(string=re.compile('.*{0}.*'.format("Java")))
+            is_sql = job_description.find(string=re.compile('.*{0}.*'.format("SQL")))
+            is_unity = job_description.find(string=re.compile('.*{0}.*'.format("Unity")))
+            if is_python != None:
+                language += "Python "
+            if is_csharp != None:
+                language += "C# "
+            if is_cplus != None:
+                language += "C++ "
+            if is_java != None:
+                language += "Java "
+            if is_sql != None:
+                language += "SQL "
+            if is_unity != None:
+                language += "Unity "
+            
             job_info = soup.find("div", class_="job-info-container")
-
+            # Finds job location
             location = job_info.find("label", string="Location").parent.find("p")
+            # Finds job experience required
             experience = job_info.find("label", string="Experience Level").parent.find("p")
+            # Finds company name
             company_name = job_info.find("label", string="Company Name").parent.find("p")
+            # Finds Job Titles
             job_title = soup.find("h3", class_="margin-b-4")
             unwanted = job_title.find("span")
             if unwanted is not None:
                 unwanted.extract()
-            print(job_title.text.strip())
+            data.append([job_title.text.strip(), company_name.text.strip(), experience.text.strip(), location.text.strip(), language])
+    return data
 
-job_desc()
+print(job_desc())
+
+        
+
+
 
