@@ -18,6 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    #All requests starting with gameindustry is handled by gameindustry app
+    # All requests starting with gameindustry is handled by gameindustry app
     path('gameindustry/', include('gameindustry.urls'))
 ]

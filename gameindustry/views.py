@@ -6,7 +6,7 @@ from django.shortcuts import render
 
 
 #created a dictionary called 'listings'
-# in which all the job listings and relevant information will be stored. 
+# in which all the job listings and relevant information will be stored.
 listings = [
     {
         'listingID': 451324,

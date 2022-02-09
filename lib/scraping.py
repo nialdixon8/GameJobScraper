@@ -5,49 +5,62 @@ from urllib.parse import parse_qs
 import matplotlib.pyplot as plt
 import re
 
-from setup_db import setup_connection, Offer
 
-#We will be scraping gamesjobdirect.com
+def django_setup():
+    """Setup django - see https://stackoverflow.com/questions/34114427."""
+    import os
+    import django
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'group15.settings'
+    django.setup()
+
+
+django_setup()
+
+from gameindustry.models import Offer
+
+
+# We will be scraping gamesjobdirect.com
 
 
 def final_page():
     """
     So that we can iterate through all the pages of a search, we need to find the final page number to use as a condition
     """
-    #The initial URL of gamesjobdirect when you search leicester in a 50 mile radius
+    # The initial URL of gamesjobdirect when you search leicester in a 50 mile radius
     URL = "https://www.gamesjobsdirect.com/results?page=1&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4"
     page = requests.get(URL)
 
     soup = BeautifulSoup(page.content, "html.parser")
-    #find the margin where the go to last page tab is
+    # find the margin where the go to last page tab is
     results = soup.find_all("div", class_="margin-t-1")
 
-    #We need to loop through the divs as there may be multiple margin-t-1
+    # We need to loop through the divs as there may be multiple margin-t-1
     for x in results:
         links = x.find_all("a")
         for link in links:
             link_url = link["href"]
 
-    #parse the url to find what the final page is
+    # parse the url to find what the final page is
     url = "https://www.gamesjobsdirect.com" + link_url
     parsed_url = urlparse(url)
     last_page = parse_qs(parsed_url.query)['page'][0]
 
     return last_page
-    
+
 
 def titles():
     title_list = []
-    for page in range(1, int(final_page())+1):
+    for page in range(1, int(final_page()) + 1):
         URL = f"https://www.gamesjobsdirect.com/results?page={page}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4"
         page = requests.get(URL)
         soup = BeautifulSoup(page.content, "html.parser")
-        #find the margin where the go to last page tab is
+        # find the margin where the go to last page tab is
         results = soup.find_all("a", class_="job-title")
-        #This will need to be changed later so it gets stored in a database instead of printing
+        # This will need to be changed later so it gets stored in a database instead of printing
         for x in results:
             title_list.append(x["title"])
-    return(title_list)
+    return (title_list)
+
 
 def job_types():
     soft_engineer = 0
@@ -65,6 +78,7 @@ def job_types():
     print(data_analyst)
     print(ui_design)
 
+
 def programming_langs():
     """
     Counts all programming languages in a specific job search
@@ -75,8 +89,8 @@ def programming_langs():
     java = 0
     sql = 0
     unity = 0
-    #loops through all the pages in a search
-    for page in range(1, int(final_page())+1):
+    # loops through all the pages in a search
+    for page in range(1, int(final_page()) + 1):
         URL = f"https://www.gamesjobsdirect.com/results?page={page}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4"
         page = requests.get(URL)
         soup = BeautifulSoup(page.content, "html.parser")
@@ -104,10 +118,11 @@ def programming_langs():
                 sql += 1
             if is_unity != None:
                 unity += 1
-            
+
             continue
     return [python, csharp, cplus, java, sql, unity]
-             
+
+
 def graph():
     """
     Creates a graph that represents most common programming languages
@@ -117,19 +132,20 @@ def graph():
 
     fig1, ax1 = plt.subplots()
     ax1.pie(sizes, labels=labels, autopct='%1.1f%%',
-        shadow=True, startangle=90)
+            shadow=True, startangle=90)
     ax1.axis('equal')  # Equal aspect ratio ensures that pie is drawn as a circle.
 
     plt.show()
-            
+
+
 def job_desc():
     """
     Scrapes all important info about the jobs and returns lists of all data
     """
     data = []
-#    for page in range(1, int(final_page())+1):
 
     session = setup_connection()
+    # for page in range(1, int(final_page())+1):
     for page in range(1, 6):
         URL = f"https://www.gamesjobsdirect.com/results?page={page}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4"
         page = requests.get(URL)
@@ -160,7 +176,7 @@ def job_desc():
                 language += "SQL "
             if is_unity != None:
                 language += "Unity "
-            
+
             job_info = soup.find("div", class_="job-info-container")
             # Finds job location
             location = job_info.find("label", string="Location").parent.find("p")
