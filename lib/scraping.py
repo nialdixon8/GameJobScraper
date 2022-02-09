@@ -1,9 +1,9 @@
+import re
 import requests
+import matplotlib.pyplot as plt
 from bs4 import BeautifulSoup
 from urllib.parse import urlparse
 from urllib.parse import parse_qs
-import matplotlib.pyplot as plt
-import re
 
 
 def django_setup():
@@ -142,9 +142,7 @@ def job_desc():
     """
     Scrapes all important info about the jobs and returns lists of all data
     """
-    data = []
-
-    session = setup_connection()
+    all_offers = []
     # for page in range(1, int(final_page())+1):
     for page in range(1, 6):
         URL = f"https://www.gamesjobsdirect.com/results?page={page}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4"
@@ -189,12 +187,12 @@ def job_desc():
             unwanted = job_title.find("span")
             if unwanted is not None:
                 unwanted.extract()
-            data.append([job_title.text.strip(), company_name.text.strip(), experience.text.strip(), location.text.strip(), language])
-            offer = Offer(title=job_title.text.strip(), employer=company_name.text.strip(),
-                          location=location.text.strip(), experience=experience.text.strip(),requirements=language)
-            session.add(offer)
-    session.commit()
-
-
-if __name__ == '__main__':
-    job_desc()
+            offer = Offer(
+                title=job_title.text.strip(),
+                employer=company_name.text.strip(),
+                location=location.text.strip(),
+                experience=experience.text.strip(),
+                requirements=language
+            )
+            all_offers.append(offer)
+    Offer.objects.bulk_create(all_offers)
