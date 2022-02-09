@@ -52,30 +52,21 @@ $> python3 -m pip install -U pip setuptools wheel
 $> python3 -m pip install -r requirements.txt
 ```
 
-### Setup/migrate the database
-
-```commandline
-$> python3 ./manage.py migrate
-```
-
-## Run the web application
+## How to run the web application
 
 ```commandline
 $> python3 ./manage.py runserver
 ```
 
-## TODO
-- Smoke test the environment (e.g. do something like
-  `python3 manage.py --help` and `python3 gicli --help`)
+## Database
 
-- How to run the web application
+### Setup the database
 
-- How to use it
+```commandline
+$> python3 ./manage.py migrate
+```
 
-
-## Addendum
-
-### Create a migratrion [1]
+### Changing/Expanding the database schema [1]
 
 - First, create the model into `gameindustry/models.py`
 - Execute `python3 manage.py makemigrations gameindustry`
