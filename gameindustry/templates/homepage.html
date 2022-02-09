@@ -2,21 +2,17 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Working?</title>
+    <title>Home</title>
 </head>
 <body>
-    Welcome, This is Homepage
-    {% for listing in listings %}
-        <h1>{{listing.title}}</h1>
-        <p>Date Posted: {{listing.date_posted}}</p>
-        <p>Listing ID: {{listing.listingID}}</p>
-        <p>Programming Language: {{listing.lang}}</p>
-        <p>Company Name: {{listing.company}}</p>
-        <p>Region: {{listing.region}}</p>
-
+    <h3> Homepage of Gameindustry App </h3>
+    {% for offer in offers %}
+        <hr/>
+        <p> {{ offer.title }} </p>
+        <p> {{ offer.employer }} </p>
+        <p> {{ offer.location }} </p>
+        <p> {{ offer.experience }} </p>
+        <p> {{ offer.requirements }} </p>
     {% endfor %}
-
 </body>
-
-
 </html>
