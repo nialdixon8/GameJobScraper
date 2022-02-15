@@ -10,6 +10,6 @@ import sys
 if __name__ == '__main__':
     # Make the project root an import path directory:
     sys.path.append(os.getcwd())
-    from lib.scraping import GamesJobDirectScraper
-    gjds = GamesJobDirectScraper()
-    gjds.main()
+    from lib.scraping import GamesJobDirectScraper, GameindustryBizScraper
+    for scraper_class in (GamesJobDirectScraper, GameindustryBizScraper):
+        scraper_class().main()
