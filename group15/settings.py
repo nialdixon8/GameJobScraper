@@ -40,6 +40,7 @@ INSTALLED_APPS = [
 
     # 'gameindustry.apps.GameindustryConfig',
     'gameindustry',
+    'django_filters',
 ]
 
 MIDDLEWARE = [

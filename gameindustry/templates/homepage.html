@@ -8,6 +8,11 @@
     <h2>GameIndustry.</h2>
     <h3>Job Listings</h3>
 
+    <form method="get">
+        {{offerFilter.form}}
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+
     {% for offer in offers %}
         <hr/>
         <p><b>Job Title:</b> {{ offer.title }} </p>
