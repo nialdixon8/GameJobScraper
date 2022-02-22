@@ -3,6 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Home</title>
+    <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 5px;
+    }
+    th {
+      text-align: left;
+    }
+    </style>
 </head>
 <body>
     <h2>GameIndustry.</h2>
@@ -12,14 +24,25 @@
         {{offerFilter.form}}
         <button type="submit" class="btn btn-primary">Search</button>
     </form>
+    <br/>
+    <table>
+        <tr>
+            <th>Job Title</th>
+            <th>Company</th>
+            <th>Location</th>
+            <th>Experience</th>
+            <th>Requirements</th>
+        </tr>
+        {% for offer in offers %}
+        <tr>
+            <td> {{ offer.title }} </td>
+            <td> {{ offer.employer }} </td>
+            <td> {{ offer.location }} </td>
+            <td> {{ offer.experience }} </td>
+            <td> {{ offer.requirements }} </td>
+        </tr>
+        {% endfor %}
+    </table>
 
-    {% for offer in offers %}
-        <hr/>
-        <p><b>Job Title:</b> {{ offer.title }} </p>
-        <p><b>Company:</b> {{ offer.employer }} </p>   
-        <p><b>Location:</b> {{ offer.location }} </p>   
-        <p><b>Experience:</b> {{ offer.experience }} </p>   
-        <p><b>Requirements:</b> {{ offer.requirements }} </p>   
-    {% endfor %}
 </body>
 </html>
