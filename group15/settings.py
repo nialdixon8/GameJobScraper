@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # 'gameindustry.apps.GameindustryConfig',
     'gameindustry',
     'django_filters',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [

@@ -1,48 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Home</title>
-    <style>
-    table, th, td {
-      border: 1px solid black;
-      border-collapse: collapse;
-    }
-    th, td {
-      padding: 5px;
-    }
-    th {
-      text-align: left;
-    }
-    </style>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Game Industry Data</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
 </head>
 <body>
-    <h2>GameIndustry.</h2>
-    <h3>Job Listings</h3>
 
-    <form method="get">
-        {{offerFilter.form}}
-        <button type="submit" class="btn btn-primary">Search</button>
-    </form>
-    <br/>
-    <table>
-        <tr>
-            <th>Job Title</th>
-            <th>Company</th>
-            <th>Location</th>
-            <th>Experience</th>
-            <th>Requirements</th>
-        </tr>
-        {% for offer in offers %}
-        <tr>
-            <td> {{ offer.title }} </td>
-            <td> {{ offer.employer }} </td>
-            <td> {{ offer.location }} </td>
-            <td> {{ offer.experience }} </td>
-            <td> {{ offer.requirements }} </td>
-        </tr>
-        {% endfor %}
-    </table>
-
+<ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="#graph" class="nav-link" data-bs-toggle="tab">Graphs</a>
+    </li>
+    <li class="nav-item">
+        <a href="#data" class="nav-link active" data-bs-toggle="tab">Raw Data</a>
+    </li>
+</ul>
+<div class="tab-content">
+    <div class="tab-pane fade" id="graph">
+        <h3>Graph page not yet implemened</h3>
+    </div>
+    <div class="tab-pane fade show active m-5" id="data">
+        <h3>Search Raw Data</h3>
+        <br/>
+        <form class="row g-3" method="get">
+            {% bootstrap_field offerFilter.form.titleF form_group_class="col-2" %}
+            {% bootstrap_field offerFilter.form.employerF form_group_class="col-2" %}
+            {% bootstrap_field offerFilter.form.locationF form_group_class="col-2" %}
+            {% bootstrap_field offerFilter.form.experienceF form_group_class="col-2" %}
+            {% bootstrap_field offerFilter.form.requirementsF form_group_class="col-2" %}
+            <div class="col-12">
+                {% bootstrap_button "Search" button_type="submit" button_class="btn-primary" %}
+            </div>
+        </form>
+        <table class="table table-striped p-5 mt-3">
+            <thead>
+            <tr>
+                <th>Job Title</th>
+                <th>Company</th>
+                <th>Location</th>
+                <th>Experience</th>
+                <th>Requirements</th>
+            </tr>
+            </thead>
+            {% for offer in offers %}
+            <tr>
+                <td> {{ offer.title }} </td>
+                <td> {{ offer.employer }} </td>
+                <td> {{ offer.location }} </td>
+                <td> {{ offer.experience }} </td>
+                <td> {{ offer.requirements }} </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
 </body>
 </html>

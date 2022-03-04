@@ -7,7 +7,7 @@ from .filters import OfferFilter
 
 def homepage(request):
     """
-    Provides the view for the /gameindustry/home/ page
+    Provides the view for the /gameindustry/ page
     """
     all_offers = Offer.objects.all()
     offerFilter = OfferFilter(request.GET, queryset=all_offers)
