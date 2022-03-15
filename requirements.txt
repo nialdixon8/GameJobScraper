@@ -2,3 +2,5 @@ django
 requests
 beautifulsoup4
 matplotlib
+django-filter
+django-bootstrap-v5
