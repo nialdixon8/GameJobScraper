@@ -4,37 +4,182 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Game Industry Data</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+    
 </head>
 <body>
 
+
+
 <ul class="nav nav-tabs">
+    <li class="nav-item">
+        <a href="#trends" class="nav-link" data-bs-toggle="tab">Trends</a>
+    </li>
     <li class="nav-item">
         <a href="#graph" class="nav-link" data-bs-toggle="tab">Graphs</a>
     </li>
     <li class="nav-item">
         <a href="#data" class="nav-link active" data-bs-toggle="tab">Raw Data</a>
     </li>
+    
 </ul>
+
+<form class="row g-3 mx-5 mt-2" method="get">
+    {% bootstrap_field offerFilter.form.titleF form_group_class="col-2" %}
+    {% bootstrap_field offerFilter.form.employerF form_group_class="col-2" %}
+    {% bootstrap_field offerFilter.form.locationF form_group_class="col-2" %}
+    {% bootstrap_field offerFilter.form.experienceF form_group_class="col-2" %}
+    {% bootstrap_field offerFilter.form.requirementsF form_group_class="col-2" %}
+    <div class="col-12">
+        {% bootstrap_button "Search" button_type="submit" button_class="btn-primary" %}
+    </div>
+</form>
+
 <div class="tab-content">
-    <div class="tab-pane fade" id="graph">
-        <h3>Graph page not yet implemened</h3>
+
+    <div class="tab-pane fade m-5" id="trends">
+        <!--Line Graph-->
+        <canvas id="lineGraph" width="500" height="500"></canvas>
+        <script>
+            const lineCtx = document.getElementById('lineGraph').getContext('2d');
+            const lineGraph = new Chart(lineCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Python', 'C++', 'C#', 'Java', 'SQL', 'Unity'],
+                    datasets: [{
+                        label: 'Programming languages',
+                        data: {{langs}},
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: false,
+                    maintainAspectRatio: false
+                }
+            });
+            </script>
+
+    </div>
+
+    <div class="tab-pane fade m-5" id="graph">
+        <h3 class="d-flex justify-content-center">Programming Language Statistics</h3>
+        <br>
+        <br>
+        <br>
+        <div class="row d-flex justify-content-center">
+        <!--Doughnut chart for programming langs-->
+        <canvas id="myChart" width="500" height="500" class="mx-auto"></canvas>
+        
+
+
+        <script>
+            const ctx = document.getElementById('myChart').getContext('2d');
+            const myChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Python', 'C++', 'C#', 'Java', 'SQL', 'Unity'],
+                    datasets: [{
+                        label: 'Programming languages',
+                        data: {{langs}},
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    
+                    responsive: false,
+                    maintainAspectRatio: false
+                }
+            });
+            </script>
+            <!--Bar Chart for programming languages-->
+            <canvas id="barProgramming" width="500" height="500" class="mx-auto"></canvas>
+        <script>
+            const ctx1 = document.getElementById('barProgramming').getContext('2d');
+            const barProgramming = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: ['Python', 'C++', 'C#', 'Java', 'SQL', 'Unity'],
+                    datasets: [{
+                        label: 'Programming languages',
+                        data: {{langs}},
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                            'rgba(153, 102, 255, 0.2)',
+                            'rgba(255, 159, 64, 0.2)'
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                            'rgba(153, 102, 255, 1)',
+                            'rgba(255, 159, 64, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: false,
+                    maintainAspectRatio: false
+                }
+            });
+            </script>
+
+            
+        </div>
     </div>
     <div class="tab-pane fade show active m-5" id="data">
-        <h3>Search Raw Data</h3>
+        <h3 class="d-flex justify-content-center">Search Raw Data</h3>
         <br/>
-        <form class="row g-3" method="get">
-            {% bootstrap_field offerFilter.form.titleF form_group_class="col-2" %}
-            {% bootstrap_field offerFilter.form.employerF form_group_class="col-2" %}
-            {% bootstrap_field offerFilter.form.locationF form_group_class="col-2" %}
-            {% bootstrap_field offerFilter.form.experienceF form_group_class="col-2" %}
-            {% bootstrap_field offerFilter.form.requirementsF form_group_class="col-2" %}
-            <div class="col-12">
-                {% bootstrap_button "Search" button_type="submit" button_class="btn-primary" %}
-            </div>
-        </form>
+        
         <table class="table table-striped p-5 mt-3">
             <thead>
             <tr>
@@ -57,5 +202,6 @@
         </table>
     </div>
 </div>
+
 </body>
 </html>
