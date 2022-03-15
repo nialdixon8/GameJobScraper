@@ -9,3 +9,4 @@ class Offer(models.Model):
     location = models.CharField(max_length=50)
     experience = models.CharField(max_length=50)
     requirements = models.CharField(max_length=50)
+    time_scraped = models.DateTimeField()
