@@ -15,7 +15,7 @@ if __name__ == '__main__':
     timestamp = dt.now()
     start_all = time.time()
     # for scraper_class in (GamesJobDirectScraper, GameindustryBizScraper, AardvarkSwiftScraper, AmiqusScraper):
-    for scraper_class in (GamesJobDirectScraper, AmiqusScraper):
+    for scraper_class in (GameindustryBizScraper, AardvarkSwiftScraper, AmiqusScraper):
         start = time.time()
         scraper_class(timestamp).main()
         end = time.time()
