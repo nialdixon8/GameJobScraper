@@ -1,5 +1,4 @@
 import django_filters
-from matplotlib.pyplot import title
 from .models import *
 
 """Imports all from gameindustry.models"""
@@ -14,7 +13,7 @@ class OfferFilter(django_filters.FilterSet):
     locationF = django_filters.CharFilter(field_name='location', lookup_expr='icontains', label='Location')
     experienceF = django_filters.CharFilter(field_name='experience', lookup_expr='icontains', label='Experience')
     requirementsF = django_filters.CharFilter(field_name='requirements', lookup_expr='icontains', label='Requirements')
-    
+
     class Meta:
         model = Offer
         fields = ['titleF', 'employerF', 'locationF', 'experienceF', 'requirementsF']

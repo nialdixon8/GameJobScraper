@@ -45,8 +45,9 @@ class Scraper(object):
 class GamesJobDirectScraper(Scraper):
     """ Class for scraping www.gamesjobsdirect.com
     """
-    def __init__(self):
+    def __init__(self, timestamp):
         self.url = 'https://www.gamesjobsdirect.com/results?page={}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4'
+        self.timestamp = timestamp
 
     def main(self):
         """ Creates threads and gives them a different page to scrape through.
@@ -103,7 +104,8 @@ class GamesJobDirectScraper(Scraper):
                 employer=employer,
                 location=location,
                 experience=experience,
-                requirements=requirements
+                requirements=requirements,
+                time_scraped=self.timestamp
             )
             current_offers.append(offer)
         Offer.objects.bulk_create(current_offers)
@@ -112,8 +114,9 @@ class GamesJobDirectScraper(Scraper):
 class GameindustryBizScraper(Scraper):
     """ Class for scraping jobs.gamesindustry.biz
     """
-    def __init__(self):
+    def __init__(self, timestamp):
         self.url = 'https://jobs.gamesindustry.biz/jobs?search=&job_geo_location=Leicester%2C%20UK&radius=50&Find_Jobs=Find%20Jobs&lat=52.6368778&lon=-1.1397592&country=United%20Kingdom&administrative_area_level_1=England'
+        self.timestamp = timestamp
 
     def main(self):
         """ Creates threads and gives them a different page to scrape through.
@@ -159,7 +162,8 @@ class GameindustryBizScraper(Scraper):
                 employer=employer,
                 location=location,
                 experience=experience,
-                requirements=requirements
+                requirements=requirements,
+                time_scraped=self.timestamp
             )
             current_offers.append(offer)
         Offer.objects.bulk_create(current_offers)
@@ -168,8 +172,9 @@ class GameindustryBizScraper(Scraper):
 class AardvarkSwiftScraper(Scraper):
     """ Class for scraping aswift.com
     """
-    def __init__(self):
+    def __init__(self, timestamp):
         self.url = 'https://aswift.com/job-search/?page_job={}&industry=&location=united-kingdom&job_title=&cs_=Search&parent=&industry=&job_title='
+        self.timestamp = timestamp
 
     def main(self):
         """ Creates threads and gives them a different page to scrape through.
@@ -214,7 +219,8 @@ class AardvarkSwiftScraper(Scraper):
                 employer=employer,
                 location=location,
                 experience=experience,
-                requirements=requirements
+                requirements=requirements,
+                time_scraped=self.timestamp
             )
             current_offers.append(offer)
         Offer.objects.bulk_create(current_offers)
@@ -223,7 +229,7 @@ class AardvarkSwiftScraper(Scraper):
 class AmiqusScraper(Scraper):
     """ Class for scraping www.amiqus.com
     """
-    def __init__(self):
+    def __init__(self, timestamp):
         self.url = 'https://www.amiqus.com/jobs?q=&options=,20878,20877&page={}&size=12'
         self.offer_url = 'https://www.amiqus.com{}'
         self.headers = {  # if we don't include headers the website detects that we are not a human
@@ -241,6 +247,7 @@ class AmiqusScraper(Scraper):
             'Sec-Fetch-User': '?1',
             'Sec-GPC': '1'
         }
+        self.timestamp = timestamp
 
     def main(self):
         """ Creates threads and gives them a different page to scrape through.
@@ -285,19 +292,8 @@ class AmiqusScraper(Scraper):
                 employer=employer,
                 location=location.text.strip(),
                 experience=experience,
-                requirements=requirements
+                requirements=requirements,
+                time_scraped=self.timestamp
             )
             current_offers.append(offer)
         Offer.objects.bulk_create(current_offers)
-
-
-# TODO: clean this up before merge!
-# def threads():
-#     URLs = []
-#     for page in range(1, int(final_page()) + 1):
-#         URLs.append(f"https://www.gamesjobsdirect.com/results?page={page}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4")
-#
-#     with ProcessPoolExecutor(max_workers=10) as executor:
-#         futures = [executor.submit(parse, url) for url in URLs]
-#         print(futures)
-

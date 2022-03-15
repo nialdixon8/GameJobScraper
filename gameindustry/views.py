@@ -9,11 +9,13 @@ def homepage(request):
     """
     Provides the view for the /gameindustry/home/ page
     """
-    all_offers = Offer.objects.all()
-    offerFilter = OfferFilter(request.GET, queryset=all_offers)
-    all_offers = offerFilter.qs
+    latest_timestamp = Offer.objects.all().order_by('-time_scraped')[0].time_scraped
+    latest_offers = Offer.objects.filter(time_scraped=latest_timestamp)
+
+    offerFilter = OfferFilter(request.GET, queryset=latest_offers)
+    latest_offers = offerFilter.qs
     context = {
-        'offers': all_offers,
+        'offers': latest_offers,
         'offerFilter': offerFilter
     }
     return render(request, 'homepage.html', context)
