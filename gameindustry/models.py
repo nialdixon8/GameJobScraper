@@ -10,3 +10,7 @@ class Offer(models.Model):
     experience = models.CharField(max_length=50)
     requirements = models.CharField(max_length=50)
     time_scraped = models.DateTimeField()
+
+
+class Technology(models.Model):
+    name = models.CharField(max_length=50)

@@ -21,7 +21,7 @@ def django_setup():
 
 
 django_setup()
-from gameindustry.models import Offer
+from gameindustry.models import Offer, Technology
 
 
 class Scraper(object):
@@ -31,15 +31,22 @@ class Scraper(object):
         """ Parses a job offer's description to determine what technologies are required by it.
         """
         requirements = ""
-        for tech in TECHNOLOGIES:
+        technologies = Technology.objects.all()
+        for tech in [t.name for t in technologies]:
             present = job_description.find(string=re.compile('.*{0}.*'.format(tech)))
             if present:
                 tech = tech.replace('\\', '')
-                requirements += f"{tech} "
-        return requirements
+                requirements += f"{tech}|"
+        return requirements.rstrip('|')
 
-    # this one is a bit sketchy because of no pages
-    # https://hitmarker.net/jobs?location=uk&sector=technology+quality-assurance+game-production+game-design+game-development+devops+software-engineering
+    def ensure_technologies(self):
+        """ Ensures that at least the default set of technologies are in the database.
+        """
+        tech_in_db = Technology.objects.all()
+        for tech in TECHNOLOGIES:
+            if tech not in [t.name for t in tech_in_db]:
+                new_tech = Technology(name=tech)
+                new_tech.save()
 
 
 class GamesJobDirectScraper(Scraper):
@@ -48,6 +55,7 @@ class GamesJobDirectScraper(Scraper):
     def __init__(self, timestamp):
         self.url = 'https://www.gamesjobsdirect.com/results?page={}&stack=0&mt=2&ic=False&l=Leicester&lid=2644668&lat=52.638599395752&lon=-1.13169002532959&r=50&age=0&sper=4'
         self.timestamp = timestamp
+        self.ensure_technologies()
 
     def main(self):
         """ Creates threads and gives them a different page to scrape through.
@@ -117,6 +125,7 @@ class GameindustryBizScraper(Scraper):
     def __init__(self, timestamp):
         self.url = 'https://jobs.gamesindustry.biz/jobs?search=&job_geo_location=Leicester%2C%20UK&radius=50&Find_Jobs=Find%20Jobs&lat=52.6368778&lon=-1.1397592&country=United%20Kingdom&administrative_area_level_1=England'
         self.timestamp = timestamp
+        self.ensure_technologies()
 
     def main(self):
         """ Creates threads and gives them a different page to scrape through.
@@ -175,6 +184,7 @@ class AardvarkSwiftScraper(Scraper):
     def __init__(self, timestamp):
         self.url = 'https://aswift.com/job-search/?page_job={}&industry=&location=united-kingdom&job_title=&cs_=Search&parent=&industry=&job_title='
         self.timestamp = timestamp
+        self.ensure_technologies()
 
     def main(self):
         """ Creates threads and gives them a different page to scrape through.
@@ -248,6 +258,7 @@ class AmiqusScraper(Scraper):
             'Sec-GPC': '1'
         }
         self.timestamp = timestamp
+        self.ensure_technologies()
 
     def main(self):
         """ Creates threads and gives them a different page to scrape through.

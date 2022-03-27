@@ -3,6 +3,7 @@ from datetime import datetime as dt
 
 from django.shortcuts import render, redirect
 from django import template
+from django.views.decorators.csrf import csrf_exempt
 
 from .models import *
 from .filters import OfferFilter
@@ -29,29 +30,31 @@ def homepage(request):
     offerFilter = OfferFilter(request.GET, queryset=latest_offers)
     latest_offers = offerFilter.qs
 
-    langs = [0, 0, 0, 0, 0, 0]
+    technologies = [t.name.replace('\\', '') for t in Technology.objects.all()]
+    langs = [0 for _ in technologies]
+
     for offer in latest_offers:
-        for idx, tech in enumerate(TECHNOLOGIES):
-            tech = tech.replace('\\', '')
-            if tech in offer.requirements.split():
+        for idx, tech in enumerate(technologies):
+            if tech in offer.requirements.split('|'):
                 langs[idx] += 1
 
-    trends = [list(), list(), list(), list(), list(), list()]
+    trends = [list() for _ in technologies]
     timestamps = Offer.objects.values('time_scraped').order_by('time_scraped').distinct()
     for timestamp in timestamps:
-        for idx, tech in enumerate(TECHNOLOGIES):
-            tech = tech.replace('\\', '')
+        for idx, tech in enumerate(technologies):
             timed_offers = Offer.objects.filter(time_scraped=timestamp['time_scraped']).filter(requirements__contains=tech).count()
             trends[idx].append(timed_offers)
     string_timestamps = [date['time_scraped'].strftime("%d-%b-%Y") for date in timestamps]
     print('string_timestamps: {}'.format(string_timestamps))
 
+    print(langs)
     context = {
         'offers': latest_offers,
         'offerFilter': offerFilter,
         'langs': langs,
         'trends': trends,
-        'timestamps': string_timestamps
+        'timestamps': string_timestamps,
+        'technologies': technologies
     }
     return render(request, 'homepage.html', context)
 
@@ -72,3 +75,15 @@ def scrape(request):
     print('Total scraping time: {:.2f}s'.format(end_all - start_all))
     return redirect('/gameindustry/')
 
+
+@csrf_exempt
+def create_filter(request):
+    """
+    Provides the view for the /gameindustry/ page
+    """
+    new_tech_name = request.POST.get('new_tech')
+    if not new_tech_name:
+        return redirect('/gameindustry/')
+    new_tech = Technology(name=new_tech_name)
+    new_tech.save()
+    return redirect('/gameindustry/')

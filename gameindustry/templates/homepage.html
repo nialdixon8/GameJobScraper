@@ -63,7 +63,7 @@ $(function() {
             const myChart = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Python', 'C#', 'C++', 'Java', 'SQL', 'Unity'],
+                    labels: {{ technologies|safe }},
                     datasets: [{
                         label: 'Programming languages',
                         data: {{langs}},
@@ -99,7 +99,7 @@ $(function() {
             const barProgramming = new Chart(ctx1, {
                 type: 'bar',
                 data: {
-                    labels: ['Python', 'C#', 'C++', 'Java', 'SQL', 'Unity'],
+                    labels: {{ technologies|safe }},
                     datasets: [{
                         label: 'Programming languages',
                         data: {{langs}},
@@ -230,8 +230,25 @@ $(function() {
         </table>
     </div>
     <div class="tab-pane fade m-5" id="scraping">
-        <h3 class="d-flex justify-content-center">Manage Data Scraping</h3>
+        <h3 class="d-flex justify-content-center">Scraping Dashboard</h3>
         <br/>
+        <h5> List of existing keywords: </h5>
+        <ol>
+            {% for tech in technologies %}
+            <li>{{ tech }}</li>
+            {% endfor %}
+        </ol>
+        <br/><br/>
+        <h5> Create new keyword </h5>
+        <form method="POST" action="/gameindustry/create_filter">
+            <div class="mb-3">
+                <label for="newTechnology" class="form-label">Keyword string</label>
+                <input type="text" class="form-control" id="newTechnology" name="new_tech">
+            </div>
+            <button type="submit" class="btn btn-primary">Create</button>
+        </form>
+        <br/><br/>
+        <h5> Trigger scraping </h5>
         <form method="GET" action="/gameindustry/scrape">
             <p>Warning: scraping may take a while (20-100 seconds, depending on internet connection)</p>
             {% bootstrap_button "Scrape" button_type="submit" button_class="btn-primary" %}
