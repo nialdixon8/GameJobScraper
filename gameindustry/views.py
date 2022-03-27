@@ -1,13 +1,15 @@
-from pickle import GET
-from django.shortcuts import render
+import time
+from datetime import datetime as dt
+
+from django.shortcuts import render, redirect
 from django import template
-from .models import Offer
+
 from .models import *
 from .filters import OfferFilter
-from lib.scraping import TECHNOLOGIES
-
+from lib.scraping import *
 
 register = template.Library()
+
 
 @register.filter(name='idx')
 def return_item(l, i):
@@ -52,3 +54,21 @@ def homepage(request):
         'timestamps': string_timestamps
     }
     return render(request, 'homepage.html', context)
+
+
+def scrape(request):
+    """
+    Provides the view for the /gameindustry/ page
+    """
+
+    timestamp = dt.now()
+    start_all = time.time()
+    for scraper_class in (GamesJobDirectScraper, GameindustryBizScraper, AmiqusScraper):
+        start = time.time()
+        scraper_class(timestamp).main()
+        end = time.time()
+        print('{} done in {:.2f}s'.format(scraper_class.__name__, end - start))
+    end_all = time.time()
+    print('Total scraping time: {:.2f}s'.format(end_all - start_all))
+    return redirect('/gameindustry/')
+

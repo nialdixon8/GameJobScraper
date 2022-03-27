@@ -7,4 +7,5 @@ from . import views
 #URLconf
 urlpatterns = [
     path('', views.homepage),
+    path('scrape', views.scrape),
 ]

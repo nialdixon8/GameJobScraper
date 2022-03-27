@@ -23,6 +23,9 @@
     <li class="nav-item">
         <a href="#data" class="nav-link" data-bs-toggle="tab">Raw Data</a>
     </li>
+    <li class="nav-item">
+        <a href="#scraping" class="nav-link" data-bs-toggle="tab">Scraping</a>
+    </li>
 </ul>
 <script>
 $(function() {
@@ -225,6 +228,14 @@ $(function() {
             </tr>
             {% endfor %}
         </table>
+    </div>
+    <div class="tab-pane fade m-5" id="scraping">
+        <h3 class="d-flex justify-content-center">Manage Data Scraping</h3>
+        <br/>
+        <form method="GET" action="/gameindustry/scrape">
+            <p>Warning: scraping may take a while (20-100 seconds, depending on internet connection)</p>
+            {% bootstrap_button "Scrape" button_type="submit" button_class="btn-primary" %}
+        </form>
     </div>
 
 </div>
