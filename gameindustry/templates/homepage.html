@@ -38,7 +38,6 @@ $(function() {
     }
 });
 </script>
-
 <form class="row g-3 mx-5 mt-2" method="get">
     {% bootstrap_field offerFilter.form.titleF form_group_class="col-2" %}
     {% bootstrap_field offerFilter.form.employerF form_group_class="col-2" %}
@@ -57,16 +56,48 @@ $(function() {
         <br><br><br>
         <div class="row d-flex justify-content-center">
         <!--Doughnut chart for programming languages-->
-        <canvas id="myChart" width="500" height="500" class="mx-auto"></canvas>
+        <canvas id="doughnutProgramming" width="500" height="500" class="mx-auto"></canvas>
         <script>
-            const ctx = document.getElementById('myChart').getContext('2d');
-            const myChart = new Chart(ctx, {
+            const ctx = document.getElementById('doughnutProgramming').getContext('2d');
+            const doughnutProgramming = new Chart(ctx, {
                 type: 'doughnut',
                 data: {
-                    labels: {{ technologies|safe }},
+                    labels: {{ technologies_tech|safe }},
                     datasets: [{
                         label: 'Programming languages',
-                        data: {{langs}},
+                        data: {{ stats_tech }},
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false
+                }
+            });
+        </script>
+        <!--Bar Chart for programming languages-->
+        <canvas id="barProgramming" width="500" height="500" class="mx-auto"></canvas>
+        <script>
+            const ctx1 = document.getElementById('barProgramming').getContext('2d');
+            const barProgramming = new Chart(ctx1, {
+                type: 'bar',
+                data: {
+                    labels: {{ technologies_tech|safe }},
+                    datasets: [{
+                        label: 'Programming languages',
+                        data: {{ stats_tech }},
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
                             'rgba(54, 162, 235, 0.2)',
@@ -87,22 +118,70 @@ $(function() {
                     }]
                 },
                 options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    responsive: false,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                       }
+                    }
+                }
+            });
+        </script>
+        </div>
+        <br/><br/><br/><br/>
+        <h3 class="d-flex justify-content-center">Art/Design Statistics</h3>
+        <br><br><br>
+
+        <div class="row d-flex justify-content-center">
+        <!--Doughnut chart for arts-->
+        <canvas id="doughnutArts" width="500" height="500" class="mx-auto"></canvas>
+        <script>
+            const ctx2 = document.getElementById('doughnutArts').getContext('2d');
+            const doughnutArts = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+                    labels: {{ technologies_art|safe }},
+                    datasets: [{
+                        label: 'Programming languages',
+                        data: {{ stats_art }},
+                        backgroundColor: [
+                            'rgba(255, 99, 132, 0.2)',
+                            'rgba(54, 162, 235, 0.2)',
+                            'rgba(255, 206, 86, 0.2)',
+                            'rgba(75, 192, 192, 0.2)',
+                        ],
+                        borderColor: [
+                            'rgba(255, 99, 132, 1)',
+                            'rgba(54, 162, 235, 1)',
+                            'rgba(255, 206, 86, 1)',
+                            'rgba(75, 192, 192, 1)',
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
                     responsive: false,
                     maintainAspectRatio: false
                 }
             });
         </script>
-        <!--Bar Chart for programming languages-->
-        <canvas id="barProgramming" width="500" height="500" class="mx-auto"></canvas>
+        <!--Bar Chart for art-->
+        <canvas id="barArts" width="500" height="500" class="mx-auto"></canvas>
         <script>
-            const ctx1 = document.getElementById('barProgramming').getContext('2d');
-            const barProgramming = new Chart(ctx1, {
+            const ctx3 = document.getElementById('barArts').getContext('2d');
+            const barArts = new Chart(ctx3, {
                 type: 'bar',
                 data: {
-                    labels: {{ technologies|safe }},
+                    labels: {{ technologies_art|safe }},
                     datasets: [{
-                        label: 'Programming languages',
-                        data: {{langs}},
+                        label: 'Art',
+                        data: {{ stats_art }},
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
                             'rgba(54, 162, 235, 0.2)',
@@ -138,64 +217,72 @@ $(function() {
                 }
             });
             </script>
-
-            
         </div>
     </div>
+
+    <script>
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF'.split('');
+            var color = '#';
+            for (var i = 0; i < 6; i++ ) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+    </script>
 
     <div class="tab-pane fade m-5" id="trends">
         <h3 class="d-flex justify-content-center">Programming Language Trends</h3>
         <br><br><br>
-        <!--Line Graph-->
-        <canvas id="lineGraph" width="1200" height="600" class="mx-auto"></canvas>
+        <!--Programming Language Trends-->
+        <canvas id="techTrends" width="1200" height="600" class="mx-auto"></canvas>
         <script>
             const labels = [{% for t in timestamps %} "{{t}}", {% endfor %}]
             const data = {
                 labels: labels,
                 datasets: [
+                {% for name, data in trends_tech %}
                     {
-                        label: 'Python',
-                        data: {{ trends.0 }},
-                        borderColor: 'rgba(255, 99, 132, 1)',
-                        backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                        label: '{{ name }}',
+                        data: {{ data }},
+                        borderColor: getRandomColor(),
                     },
-                    {
-                        label: 'C#',
-                        data: {{ trends.1 }},
-                        borderColor: 'rgba(54, 162, 235, 1)',
-                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                    },
-                    {
-                        label: 'C++',
-                        data: {{ trends.2 }},
-                        borderColor: 'rgba(255, 206, 86, 1)',
-                        backgroundColor: 'rgba(255, 206, 86, 0.2)',
-                    },
-                    {
-                        label: 'Java',
-                        data: {{ trends.3 }},
-                        borderColor: 'rgba(75, 192, 192, 1)',
-                        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                    },
-                    {
-                        label: 'SQL',
-                        data: {{ trends.4 }},
-                        borderColor: 'rgba(153, 102, 255, 1)',
-                        backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                    },
-                    {
-                        label: 'Unity',
-                        data: {{ trends.5 }},
-                        borderColor: 'rgba(255, 159, 64, 1)',
-                        backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                    },
-
+                {% endfor %}
                 ]
             };
-            const lineCtx = document.getElementById('lineGraph').getContext('2d');
-            const lineGraph = new Chart(lineCtx, {
+            const techCtx = document.getElementById('techTrends').getContext('2d');
+            const techTrends = new Chart(techCtx, {
                 type: 'line',
                 data: data,
+                options: {
+                    responsive: false,
+                    maintainAspectRatio: false
+                },
+            });
+        </script>
+        <br><br><br><br>
+        <h3 class="d-flex justify-content-center">Art/Design Trends</h3>
+        <br><br><br>
+        <!--Arts Trends-->
+        <canvas id="artTrends" width="1200" height="600" class="mx-auto"></canvas>
+        <script>
+            const labels2 = [{% for t in timestamps %} "{{t}}", {% endfor %}]
+            const data2 = {
+                labels: labels2,
+                datasets: [
+                {% for name, data in trends_art %}
+                    {
+                        label: '{{ name }}',
+                        data: {{ data }},
+                        borderColor: getRandomColor(),
+                    },
+                {% endfor %}
+                ]
+            };
+            const artCtx = document.getElementById('artTrends').getContext('2d');
+            const artTrends = new Chart(artCtx, {
+                type: 'line',
+                data: data2,
                 options: {
                     responsive: false,
                     maintainAspectRatio: false
@@ -231,22 +318,52 @@ $(function() {
     </div>
     <div class="tab-pane fade m-5" id="scraping">
         <h3 class="d-flex justify-content-center">Scraping Dashboard</h3>
-        <br/>
-        <h5> List of existing keywords: </h5>
-        <ol>
-            {% for tech in technologies %}
-            <li>{{ tech }}</li>
-            {% endfor %}
-        </ol>
-        <br/><br/>
-        <h5> Create new keyword </h5>
-        <form method="POST" action="/gameindustry/create_filter">
-            <div class="mb-3">
-                <label for="newTechnology" class="form-label">Keyword string</label>
-                <input type="text" class="form-control" id="newTechnology" name="new_tech">
+        <br/><br/><br/>
+        <div class="row">
+            <div class="col-sm">
+                <h5> Existing technical keywords: </h5>
+                <ol>
+                    {% for tech in technologies_tech %}
+                    <li>{{ tech }}</li>
+                    {% endfor %}
+                </ol>
             </div>
-            <button type="submit" class="btn btn-primary">Create</button>
-        </form>
+            <br/><br/>
+            <div class="col-sm">
+                <h5> Create new technical keyword </h5>
+                <form method="POST" action="/gameindustry/create_filter" class="col-6">
+                    <div class="mb-3">
+                        <label for="newTechnology" class="form-label">Keyword string</label>
+                        <input type="text" class="form-control" id="newTechnology" name="new_tech">
+                        <input type="hidden" class="form-control" id="techType" name="new_tech_type" value="TECH">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
+        <br/><br/>
+        <div class="row">
+            <div class="col-sm">
+                <h5> Existing art keywords: </h5>
+                <ol>
+                    {% for tech in technologies_art %}
+                    <li>{{ tech }}</li>
+                    {% endfor %}
+                </ol>
+            </div>
+            <br/><br/>
+            <div class="col-sm">
+                <h5> Create new art keyword </h5>
+                <form method="POST" action="/gameindustry/create_filter" class="col-6">
+                    <div class="mb-3">
+                        <label for="newArt" class="form-label">Keyword string</label>
+                        <input type="text" class="form-control" id="newArt" name="new_tech">
+                        <input type="hidden" class="form-control" id="artType" name="new_tech_type" value="ART">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Create</button>
+                </form>
+            </div>
+        </div>
         <br/><br/>
         <h5> Trigger scraping </h5>
         <form method="GET" action="/gameindustry/scrape">

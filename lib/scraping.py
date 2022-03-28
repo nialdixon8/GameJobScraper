@@ -8,7 +8,7 @@ from concurrent.futures import ProcessPoolExecutor
 import time
 
 
-TECHNOLOGIES = ('Python', 'C#', 'C\+\+', 'Java', 'SQL', 'Unity')
+TECHNOLOGIES = (('Python', 'TECH'), ('C#', 'TECH'), ('C\+\+', 'TECH'), ('Java', 'TECH'), ('SQL', 'TECH'), ('Unity', 'ART'))
 
 
 def django_setup():
@@ -43,9 +43,9 @@ class Scraper(object):
         """ Ensures that at least the default set of technologies are in the database.
         """
         tech_in_db = Technology.objects.all()
-        for tech in TECHNOLOGIES:
-            if tech not in [t.name for t in tech_in_db]:
-                new_tech = Technology(name=tech)
+        for tech_name, tech_type in TECHNOLOGIES:
+            if tech_name not in [t.name for t in tech_in_db]:
+                new_tech = Technology(name=tech_name, type=tech_type)
                 new_tech.save()
 
 

@@ -14,3 +14,4 @@ class Offer(models.Model):
 
 class Technology(models.Model):
     name = models.CharField(max_length=50)
+    type = models.CharField(max_length=50)
