@@ -10,6 +10,7 @@ import time
 
 TECHNOLOGIES = ('Python', 'C#', 'C\+\+', 'Java', 'SQL', 'Unity')
 
+EXPERIENCE = ('Director', 'Lead', 'Principal', 'Junior', 'Senior', 'Associate')
 
 def django_setup():
     """ Setup django - see https://stackoverflow.com/questions/34114427.
@@ -105,6 +106,11 @@ class GamesJobDirectScraper(Scraper):
             employer = job_info.find("label", string="Company Name").parent.find("p").text.strip()
             location = job_info.find("label", string="Location").parent.find("p").text.strip()
             experience = job_info.find("label", string="Experience Level").parent.find("p").text.strip()
+
+            if experience == 'Not specified':
+                for exp in EXPERIENCE:
+                    if re.match(f".*{exp}.*", job_title):
+                        experience = exp
             job_description = soup.find("div", class_="post-description")
             requirements = self.parse_requirements(job_description)
             offer = Offer(
@@ -164,6 +170,11 @@ class GameindustryBizScraper(Scraper):
             experience = 'Not specified'
             if experince_div is not None:
                 experience = experince_div.find('div', class_='field__items').find_all('div')[0].text.strip()
+            if experience == 'Not specified':
+                for exp in EXPERIENCE:
+                    if re.match(f".*{exp}.*", job_title):
+                        experience = exp
+
             job_description = soup.find('div', class_='field--type-text-with-summary')
             requirements = self.parse_requirements(job_description)
             offer = Offer(
@@ -221,7 +232,13 @@ class AardvarkSwiftScraper(Scraper):
             if employer_h2 is not None and employer_h2.text.strip():
                 employer = employer_h2.text.split('–')[0].strip()
             location = soup.find('ul', class_='post-options').find('i', class_='icon-location6').parent.find('a').text.strip()
+
             experience = 'Not specified'
+            if experience == 'Not specified':
+                for exp in EXPERIENCE:
+                    if re.match(f".*{exp}.*", job_title):
+                        experience = exp
+
             job_description = soup.find('div', class_='rich-editor-text')
             requirements = self.parse_requirements(job_description)
             offer = Offer(
@@ -296,6 +313,11 @@ class AmiqusScraper(Scraper):
             if unwanted_label is not None:
                 unwanted_label.extract()
             experience = 'Not specified'
+
+            if experience == 'Not specified':
+                for exp in EXPERIENCE:
+                    if re.match(f".*{exp}.*", job_title):
+                        experience = exp
             job_description = soup.find('div', class_='description-widget')
             requirements = self.parse_requirements(job_description)
             offer = Offer(
