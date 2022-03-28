@@ -9,4 +9,5 @@ urlpatterns = [
     path('', views.homepage),
     path('scrape', views.scrape),
     path('create_filter', views.create_filter),
+    path('delete_filter', views.delete_filter),
 ]

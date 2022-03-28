@@ -339,8 +339,20 @@ $(function() {
             <div class="col-sm">
                 <h5> Existing technical keywords: </h5>
                 <ol>
-                    {% for tech in technologies_tech %}
-                    <li>{{ tech }}</li>
+                    {% for tech in technologies_tech_obj %}
+                    <li>
+                        <div class="row">
+                            <div class="col-6">
+                                {{ tech.name }}
+                            </div>
+                            <div class="col-6 p-1">
+                                <form method="POST" action="/gameindustry/delete_filter">
+                                    <input type="hidden", value="{{tech.id}}" name="tech_id">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
                     {% endfor %}
                 </ol>
             </div>
@@ -362,8 +374,20 @@ $(function() {
             <div class="col-sm">
                 <h5> Existing art keywords: </h5>
                 <ol>
-                    {% for tech in technologies_art %}
-                    <li>{{ tech }}</li>
+                    {% for tech in technologies_art_obj %}
+                    <li>
+                        <div class="row">
+                            <div class="col-6">
+                                {{ tech.name }}
+                            </div>
+                            <div class="col-6 p-1">
+                                <form method="POST" action="/gameindustry/delete_filter">
+                                    <input type="hidden", value="{{tech.id}}" name="tech_id">
+                                    <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                </form>
+                            </div>
+                        </div>
+                    </li>
                     {% endfor %}
                 </ol>
             </div>

@@ -26,14 +26,20 @@ def homepage(request):
     """
 
     if Offer.objects.all().count() == 0:
-        return render(request, 'homepage.html')
+        all_offers = Offer.objects.all()
+        offerFilter = OfferFilter(request.GET, queryset=all_offers)
+        all_offers = offerFilter.qs
+        return render(request, 'homepage.html', {'offerFilter': OfferFilter})
+
     latest_timestamp = Offer.objects.all().order_by('-time_scraped')[0].time_scraped
     latest_offers = Offer.objects.filter(time_scraped=latest_timestamp)
     offerFilter = OfferFilter(request.GET, queryset=latest_offers)
     latest_offers = offerFilter.qs
 
     technologies_tech = [t.name.replace('\\', '') for t in Technology.objects.filter(type='TECH').all()]
+    technologies_tech_obj = Technology.objects.filter(type='TECH').all()
     technologies_art = [t.name.replace('\\', '') for t in Technology.objects.filter(type='ART').all()]
+    technologies_art_obj = Technology.objects.filter(type='ART').all()
     stats_tech = [0 for _ in technologies_tech]
     stats_art = [0 for _ in technologies_art]
 
@@ -72,7 +78,9 @@ def homepage(request):
         'trends_art': trends_art,
         'timestamps': string_timestamps,
         'technologies_tech': technologies_tech,
-        'technologies_art': technologies_art
+        'technologies_art': technologies_art,
+        'technologies_tech_obj': technologies_tech_obj,
+        'technologies_art_obj': technologies_art_obj
     }
     return render(request, 'homepage.html', context)
 
@@ -97,7 +105,7 @@ def scrape(request):
 @csrf_exempt
 def create_filter(request):
     """
-    Provides the view for the /gameindustry/ page
+    Provides the view for the /gameindustry/create_filter request
     """
     new_tech_name = request.POST.get('new_tech')
     new_tech_type = request.POST.get('new_tech_type')
@@ -105,4 +113,17 @@ def create_filter(request):
         return redirect('/gameindustry/')
     new_tech = Technology(name=new_tech_name, type=new_tech_type)
     new_tech.save()
+    return redirect('/gameindustry/')
+
+
+@csrf_exempt
+def delete_filter(request):
+    """
+    Provides the view for the /gameindustry/delete_filter request
+    """
+    tech_id = request.POST.get('tech_id')
+    if not tech_id:
+        return redirect('/gameindustry/')
+    tech = Technology.objects.get(pk=tech_id)
+    tech.delete()
     return redirect('/gameindustry/')
