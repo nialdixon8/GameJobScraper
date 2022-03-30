@@ -15,9 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.views.generic.base import RedirectView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     # All requests starting with gameindustry is handled by gameindustry app
-    path('gameindustry/', include('gameindustry.urls'))
+    path('gameindustry/', include('gameindustry.urls')),
+    path('', RedirectView.as_view(url='gameindustry', permanent=False))
 ]
